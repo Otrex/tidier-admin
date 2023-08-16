@@ -7,7 +7,7 @@
       <div>
         <top-nav />
       </div>
-      <div class="h-full">
+      <div class="h-[calc(100%_-_6rem)] overflow-y-auto">
         <nuxt-page />
       </div>
     </div>
