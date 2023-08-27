@@ -16,3 +16,25 @@ export interface IUser {
   __v: number;
   phoneVerifiedAt: Date;
 }
+
+export enum ServiceProductType {
+  CLEANING = 'Cleaning',
+  TRASH = 'Trash',
+  COOKING = 'Cooking',
+}
+
+
+export interface IService {
+  _id:                  string;
+  type:                 ServiceProductType;
+  name:                 string;
+  costPerUnit:          number;
+  isActive: boolean;
+  unit:                 string;
+  equipments:           string[];
+  equipmentCostPerUnit: number;
+  description:          string;
+  image:                string;
+  __v:                  number;
+}
+

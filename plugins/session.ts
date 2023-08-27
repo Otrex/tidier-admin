@@ -15,6 +15,8 @@ export default defineNuxtPlugin(async () => {
   api.set401Handler((res) => {
     if (res.config.url !== "/auth/login") {
       authStore.token.value = "";
+      token.value = ""
+      window.location.href = "/"
     }
   });
   

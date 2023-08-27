@@ -1,3 +1,4 @@
+import { SESSION } from "~/lib/const";
 import { useAuthStore } from "~~/store/auth";
 
 export default defineNuxtRouteMiddleware(async (to, from) => {
@@ -9,6 +10,7 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
     return navigateTo("/d");
   }
   if (!authStore.token.value && to.path !== "/") {
+    useCookie(SESSION, {}).value = '';
     return navigateTo("/");
   }
 });

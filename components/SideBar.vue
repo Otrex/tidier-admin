@@ -36,6 +36,11 @@ const menuItems = ref([
     link: "/d/users",
     icon: "users",
   },
+  {
+    label: "Services",
+    link: "/d/services",
+    icon: "services",
+  },
 ]);
 </script>
 

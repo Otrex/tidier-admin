@@ -3,6 +3,7 @@ import { createGlobalState } from "@vueuse/core";
 import { AddNewUserRequest } from "~/lib/models/requests";
 import api from "~/lib/api";
 import { useRequestsStore } from "./requests";
+import { toFormData } from "axios";
 
 
 export const useUsersStore = createGlobalState(() => {
@@ -26,5 +27,24 @@ export const useUsersStore = createGlobalState(() => {
       endRequest();
     }
   }
-  return { getUsers, addNewUser };
+
+  async function getServices() {
+    const endRequest = requestsStore.startRequest();
+    try {
+      return await api.GetServices();
+    } finally {
+      endRequest();
+    }
+  }
+
+  async function addService(data: any) {
+    const endRequest = requestsStore.startRequest();
+    try {
+      return await api.AddServices(toFormData(data) as FormData);
+    } finally {
+      endRequest();
+    }
+  }
+
+  return { getUsers, addNewUser, getServices, addService };
 });

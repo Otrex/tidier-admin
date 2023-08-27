@@ -1,9 +1,9 @@
 <template>
   <div class="flex flex-row w-full h-full">
-    <div class="w-[30rem] h-full bg-indigo-950">
+    <div class="w-1/4 h-full bg-indigo-950">
       <side-bar />
     </div>
-    <div class="w-full h-full">
+    <div class="w-3/4 h-full">
       <div>
         <top-nav />
       </div>

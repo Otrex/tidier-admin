@@ -18,6 +18,11 @@
         <template #item-phoneVerifiedAt="{ item }">
           {{ formatDate(item.phoneVerifiedAt) }}
         </template>
+        <template #item-isBlacklisted="{ item }">
+          <div @click.stop="() => {}"> 
+            <x-toggle :model-value="item.isBlacklisted" :loading="item.loading" @update:modelValue="(v) => updateBlacklist(item, v)"></x-toggle>
+          </div>
+        </template>
         <template #item-role="{ item }">
           <x-tag size="sm" color="pink" v-if="item.role === UserRole.ADMIN" rounded>{{ item.role }}</x-tag>
           <x-tag size="sm" color="blue" v-else-if="item.role === UserRole.KEEPER" rounded>{{ item.role }}</x-tag>
@@ -128,13 +133,14 @@ import { computed, ref } from "vue";
 import { useUsersStore } from "~/store/users";
 import { KeeperType, UserRole } from "~/lib/enums";
 import { AddNewUserRequest } from "lib/models/requests";
+import api from "~/lib/api";
 
 definePageMeta({
   name: "Users",
 });
 
 const showUser = ref(false)
-const currentUser = ref<IUser & { id: number }>();
+const currentUser = ref<IUser & { id: number, loading?: boolean }>();
 
 const rules = {
   isEmail: (v: string) =>
@@ -170,6 +176,7 @@ const keeperOptions = Object.values(KeeperType).map((e) => ({ value: e, label: e
 const userRoleOptions = Object.values(UserRole).map((e) => ({ value: e, label: e }));
 
 const sort = ref<any[]>([]);
+const blacklistLoading = ref<boolean>()
 
 function clickRow(e: any) {
   currentUser.value = e;
@@ -196,8 +203,20 @@ async function addNewUser() {
     userNewPassword.value = res.password;
 
     await getUsers();
-  } catch (error) {
-    
+  } catch (error: any) {
+    alert(error.message || error.errors)
+  }
+}
+
+async function updateBlacklist(item: IUser & { loading?: boolean }, v: any) {
+  try {
+    item.loading = true;
+    await api.BlacklistUser(item._id, v);
+    await getUsers();
+  } catch (error: any) {
+    alert(error.message)
+  } finally {
+    item.loading = false;
   }
 }
 
