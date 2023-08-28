@@ -18,7 +18,12 @@
   
         <template #item-isActive="{ item }">
           <div @click.stop="() => {}"> 
-            <x-toggle :model-value="item.isActive" @update:modelValue="(v) => updateActive(item, v)"></x-toggle>
+            <x-toggle :model-value="item.isActive" :loading="item.loading" @update:modelValue="updateActive(item).d"></x-toggle>
+          </div>
+        </template>
+        <template #item-action="{ item }">
+          <div @click.stop="() => {}"> 
+            <button class="!bg-red-600 inline-flex items-center p-1 rounded-md" @click="deleteService(item)"> <x-svg class="fill-white bg-red-600" value="delete" /></button>
           </div>
         </template>
         <template #item-role="{ item }">
@@ -100,6 +105,7 @@
             <x-select
               v-model="form.type"
               label="Service Type"
+              :disabled="updating.value"
               :options="typeOptions"
               placeholder="Select service type"
               class="w-full"
@@ -159,6 +165,8 @@ definePageMeta({
   name: "Services",
 });
 
+type IServiceX = IService & {id: number, loading?: boolean}
+
 const page = ref(1)
 const totalPages = ref(1)
 const updateService = ref(false);
@@ -169,8 +177,8 @@ const updating = reactive({
 });
 const onSubmit = () => {}
 const sort = ref<any[]>([]);
-const items = ref<Array<IService & {id: number}>>([]);
-const currentService = ref<IService & { id: number }>();
+const items = ref<Array<IServiceX>>([]);
+const currentService = ref<IServiceX>();
 
 const typeOptions = Object.values(ServiceProductType)
   .map((e) => ({ value: e, label: e }));
@@ -191,6 +199,19 @@ const form = reactive({
   image: "" as string | File,
 })
 
+const updateActive = (item: IServiceX) => {
+  return {
+    d: async (v: any) => {
+      try {
+        await usersStore.updateService(item._id, { isActive: v });
+        item.isActive = v
+      } catch (error: any) {
+        alert(error.message || error.errors)
+      } 
+    }
+  }
+}
+
 const reset = () => {
   form.name = "";
   form.description = "";
@@ -210,7 +231,7 @@ const openAddNewService = () => {
   reset()
 }
 
-const fill = (data: IService & {id:number}) => {
+const fill = (data: IServiceX) => {
   form.name = data.name;
   form.description = data.description;
   form.costPerUnit = data.costPerUnit;
@@ -230,7 +251,7 @@ const cancel = () => {
   reset()
 }
 
-const clickRow = (e: IService & {id: number}) => {
+const clickRow = (e: IServiceX) => {
   updateService.value = true;
   fill(e)
 }
@@ -242,6 +263,7 @@ const headers = ref([
   { text: "Type", value: "type" },
   { text: "Cost/Unit", value: "costPerUnit", sortable: true },
   { text: "Active", value: "isActive" },
+  { text: "Action", value: "action" },
 ]);
 
 
@@ -265,9 +287,24 @@ const itemsSorted = computed(() => {
 
 async function updateCurrentService() {
   try {
-    // await usersStore.updateService();
-  } catch (error) {
-    
+    if (!updating.id) {
+      alert("no id")
+      return
+    }
+    await usersStore.updateService(updating.id, {...form, type: undefined});
+    await getServices();
+    cancel();
+  } catch (error: any) {
+    alert(error.message || error.errors)
+  }
+}
+
+async function deleteService(item: IServiceX) {
+  try {
+    await usersStore.deleteService(item._id);
+    await getServices();
+  } catch (error: any) {
+    alert(error.message || error.errors)
   }
 }
 

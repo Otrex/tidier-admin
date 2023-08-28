@@ -38,3 +38,12 @@ export interface IService {
   __v:                  number;
 }
 
+export interface IWallet {
+  _id:       string;
+  user:      string;
+  general:   boolean;
+  balance:   number;
+  createdAt: Date;
+  updatedAt: Date;
+  __v:       number;
+}

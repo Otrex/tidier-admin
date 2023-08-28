@@ -46,5 +46,36 @@ export const useUsersStore = createGlobalState(() => {
     }
   }
 
-  return { getUsers, addNewUser, getServices, addService };
+  async function deleteService(id: string) {
+    const endRequest = requestsStore.startRequest();
+    try {
+      return await api.DeleteServices(id);
+    } finally {
+      endRequest();
+    }
+  }
+
+  async function dashboard() {
+    const endRequest = requestsStore.startRequest();
+    try {
+      return await api.Dashboard();
+    } finally {
+      endRequest();
+    }
+  }
+
+  async function updateService(id: string, data: any) {
+    const endRequest = requestsStore.startRequest();
+    const filtered: Record<string, any> = {}
+    Object.entries(data).forEach(([key, value]) => {
+      if (value) filtered[key] = value;
+    })
+    try {
+      return await api.UpdateServices(id, toFormData(filtered) as FormData);
+    } finally {
+      endRequest();
+    }
+  }
+
+  return { getUsers, dashboard, addNewUser, getServices, deleteService, addService, updateService };
 });

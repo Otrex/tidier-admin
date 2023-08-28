@@ -1,6 +1,6 @@
 import Api from "./core/Api";
 import { AddNewUserRequest, LoginRequest } from "./models/requests";
-import { AddNewUserResponse, GetServicesResponse, GetUsersResponse, LoginResponse } from "./models/responses";
+import { AddNewUserResponse, GetDashboardStats, GetServicesResponse, GetUsersResponse, LoginResponse } from "./models/responses";
 
 class TidierAPI extends Api {
   // Auth
@@ -24,12 +24,19 @@ class TidierAPI extends Api {
     return this.request<GetServicesResponse>("get", "/services")
   }
   async AddServices(data: FormData) {
-    return this.request<GetServicesResponse>("post", "/services", data)
+    return this.request("post", "/services", data)
   }
 
-  async UpdateServices(data: FormData) {
-    data.append("_method", "patch");
-    return this.request<GetServicesResponse>("post", "/services", data)
+  async UpdateServices(id: string, data: FormData) {
+    return this.request("patch", `/services/${id}`, data)
+  }
+
+  async DeleteServices(id: string) {
+    return this.request("delete", `/services/${id}`)
+  }
+
+  async Dashboard() {
+    return this.request<GetDashboardStats>("get", `/users/dashboard`)
   }
 }
 

@@ -1,6 +1,6 @@
 <template>
   <div class="progress flex-shrink-0">
-    <div class="indeterminate" />
+    <div class="indeterminate" >Loading</div>
   </div>
 </template>
 
@@ -30,6 +30,7 @@
 
 .progress .indeterminate {
   background-color: var(--purple-300);
+  height: 12px;
 }
 
 .progress .indeterminate:before {
