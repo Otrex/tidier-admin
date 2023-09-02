@@ -24,7 +24,7 @@ const props = defineProps<{
 
 const stats = computed(() => {
   if (props.title === "Wallet") {
-    return props.data && { balance: props.data.wallet.balance }
+    return props.data && { balance: props.data.wallet.balance,  }
   }
   return props.data && props.data[props.title.toLowerCase() as keyof typeof props.data] || {}
 })

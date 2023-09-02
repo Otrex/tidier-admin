@@ -20,6 +20,10 @@ class TidierAPI extends Api {
     return this.request("get", `/users/${userId}/set?blacklist=${key}`)
   }
 
+  async DeleteUsers(id: string) {
+    return this.request("delete", `/users/${id}`)
+  }
+
   async GetServices() {
     return this.request<GetServicesResponse>("get", "/services")
   }

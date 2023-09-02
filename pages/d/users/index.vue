@@ -23,6 +23,11 @@
             <x-toggle :model-value="item.isBlacklisted" :loading="item.loading" @update:modelValue="(v) => updateBlacklist(item, v)"></x-toggle>
           </div>
         </template>
+        <template #item-action="{ item }">
+          <div @click.stop="() => {}"> 
+            <button class="!bg-red-600 inline-flex items-center p-1 rounded-md" @click="deleteUser(item)"> <x-svg class="fill-white bg-red-600" value="delete" /></button>
+          </div>
+        </template>
         <template #item-role="{ item }">
           <x-tag size="sm" color="pink" v-if="item.role === UserRole.ADMIN" rounded>{{ item.role }}</x-tag>
           <x-tag size="sm" color="blue" v-else-if="item.role === UserRole.KEEPER" rounded>{{ item.role }}</x-tag>
@@ -169,6 +174,7 @@ const headers = ref([
   { text: "Role", value: "role", sortable: true },
   { text: "Verified At", value: "phoneVerifiedAt" },
   { text: "Blacklisted", value: "isBlacklisted" },
+  { text: "Action", value: "action" },
 ]);
 
 const items = ref<Array<IUser & {id: number}>>([]);
@@ -207,6 +213,16 @@ async function addNewUser() {
     alert(error.message || error.errors)
   }
 }
+
+async function deleteUser(item: any) {
+  try {
+    await usersStore.deleteUser(item._id);
+    await getUsers();
+  } catch (error: any) {
+    alert(error.message || error.errors)
+  }
+}
+
 
 async function updateBlacklist(item: IUser & { loading?: boolean }, v: any) {
   try {

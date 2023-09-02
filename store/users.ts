@@ -55,6 +55,15 @@ export const useUsersStore = createGlobalState(() => {
     }
   }
 
+  async function deleteUser(id: string) {
+    const endRequest = requestsStore.startRequest();
+    try {
+      return await api.DeleteUsers(id);
+    } finally {
+      endRequest();
+    }
+  }
+
   async function dashboard() {
     const endRequest = requestsStore.startRequest();
     try {
@@ -77,5 +86,5 @@ export const useUsersStore = createGlobalState(() => {
     }
   }
 
-  return { getUsers, dashboard, addNewUser, getServices, deleteService, addService, updateService };
+  return { getUsers, dashboard, addNewUser, getServices, deleteUser, deleteService, addService, updateService };
 });
